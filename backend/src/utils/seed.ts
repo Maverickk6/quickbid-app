@@ -31,7 +31,7 @@ async function seed() {
   console.log('Creating 500 auctions...');
   
   const auctions = await Promise.all(
-    Array.from({ length: 500 }).map((_, i) => {
+    Array.from({ length: 600 }).map((_, i) => {
       const startingPrice = parseFloat(faker.commerce.price({ min: 10, max: 10000 }));
       const daysFromNow = faker.number.int({ min: -7, max: 30 });
       const endTime = new Date();
