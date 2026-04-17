@@ -7,7 +7,7 @@ import { prisma } from '../db/prisma';
 
 export const authRoutes = new Hono();
 
-const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key-change-in-production';
+const JWT_SECRET = process.env.JWT_SECRET || 'secret-key';
 const JWT_EXPIRES_IN = '7d';
 
 const registerSchema = z.object({

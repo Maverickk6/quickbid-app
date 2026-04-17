@@ -52,6 +52,9 @@ auctionRoutes.get('/', zValidator('query', listQuerySchema), async (c) => {
         _count: {
           select: { bids: true },
         },
+        creator: {
+          select: { id: true, name: true },
+        },
       },
     }),
     prisma.auction.count({ where }),

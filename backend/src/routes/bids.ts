@@ -63,7 +63,7 @@ bidRoutes.post('/', authMiddleware, zValidator('json', placeBidSchema), async (c
             select: { id: true, name: true },
           },
           auction: {
-            select: { id: true, title: true, currentPrice: true },
+            select: { id: true, title: true, status: true, currentPrice: true, endTime: true },
           },
         },
       });
