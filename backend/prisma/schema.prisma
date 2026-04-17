@@ -1,0 +1,78 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Get a free hosted Postgres database in seconds: `npx create-db`
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model User {
+  id        String   @id @default(uuid())
+  email     String   @unique
+  password  String
+  name      String?
+  createdAt DateTime @default(now()) @map("created_at")
+  
+  bids      Bid[]
+  auctions  Auction[]
+  
+  @@map("users")
+}
+
+model Auction {
+  id            String        @id @default(uuid())
+  title         String
+  description   String
+  startingPrice Float         @map("starting_price")
+  currentPrice  Float         @map("current_price")
+  minIncrement  Float         @default(1.0) @map("min_increment")
+  endTime       DateTime      @map("end_time")
+  status        AuctionStatus @default(ACTIVE)
+  category      String
+  createdAt     DateTime      @default(now()) @map("created_at")
+  updatedAt     DateTime      @updatedAt @map("updated_at")
+  
+  creatorId     String?       @map("creator_id")
+  creator       User?         @relation(fields: [creatorId], references: [id])
+  
+  bids          Bid[]
+  
+  @@index([status, category])
+  @@index([status, endTime])
+  @@index([endTime])
+  @@index([currentPrice])
+  @@index([category])
+  @@index([creatorId])
+  @@map("auctions")
+}
+
+model Bid {
+  id          String   @id @default(uuid())
+  amount      Float
+  createdAt   DateTime @default(now()) @map("created_at")
+  isWinning   Boolean  @default(false) @map("is_winning")
+  
+  userId      String   @map("user_id")
+  auctionId   String   @map("auction_id")
+  
+  user        User     @relation(fields: [userId], references: [id])
+  auction     Auction  @relation(fields: [auctionId], references: [id], onDelete: Cascade)
+  
+  @@index([auctionId, createdAt])
+  @@index([userId])
+  @@index([auctionId, isWinning])
+  @@map("bids")
+}
+
+enum AuctionStatus {
+  ACTIVE
+  ENDED
+  CANCELLED
+  
+  @@map("auction_status")
+}
