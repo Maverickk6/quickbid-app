@@ -49,21 +49,21 @@ export function CountdownTimer({ endTime, onEnd }: CountdownTimerProps) {
   }, [endTime, onEnd]);
 
   if (timeLeft.total <= 0) {
-    return <span className="text-red-600 font-semibold">Ended</span>;
+    return <span className="text-destructive font-semibold">Ended</span>;
   }
 
   const formatNumber = (num: number) => num.toString().padStart(2, '0');
 
   if (timeLeft.days > 0) {
     return (
-      <span className="font-mono text-sm text-gray-700">
+      <span className="font-mono text-sm text-foreground">
         {timeLeft.days}d {formatNumber(timeLeft.hours)}h {formatNumber(timeLeft.minutes)}m
       </span>
     );
   }
 
   return (
-    <span className="font-mono text-sm text-orange-600 font-semibold">
+    <span className="font-mono text-sm text-warning font-semibold">
       {formatNumber(timeLeft.hours)}:{formatNumber(timeLeft.minutes)}:{formatNumber(timeLeft.seconds)}
     </span>
   );

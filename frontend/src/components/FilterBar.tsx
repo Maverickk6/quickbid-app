@@ -26,17 +26,17 @@ export function FilterBar({ filters, onFilterChange }: FilterBarProps) {
   };
 
   return (
-    <div className="bg-white p-4 rounded-lg shadow-sm border border-gray-200 mb-6">
+    <div className="bg-card p-4 rounded-lg shadow-sm border mb-6">
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
         {/* Status Filter */}
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
+          <label className="block text-sm font-medium text-foreground mb-1.5">
             Status
           </label>
           <select
             value={filters.status}
             onChange={(e) => handleChange('status', e.target.value)}
-            className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full border border-input bg-background rounded-md px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-ring"
           >
             <option value="">All</option>
             <option value="ACTIVE">Active</option>
@@ -46,13 +46,13 @@ export function FilterBar({ filters, onFilterChange }: FilterBarProps) {
 
         {/* Category Filter */}
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
+          <label className="block text-sm font-medium text-foreground mb-1.5">
             Category
           </label>
           <select
             value={filters.category}
             onChange={(e) => handleChange('category', e.target.value)}
-            className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full border border-input bg-background rounded-md px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-ring"
           >
             <option value="">All Categories</option>
             {categories.map((cat) => (
@@ -65,7 +65,7 @@ export function FilterBar({ filters, onFilterChange }: FilterBarProps) {
 
         {/* Price Range */}
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
+          <label className="block text-sm font-medium text-foreground mb-1.5">
             Min Price ($)
           </label>
           <input
@@ -73,12 +73,12 @@ export function FilterBar({ filters, onFilterChange }: FilterBarProps) {
             value={filters.minPrice}
             onChange={(e) => handleChange('minPrice', e.target.value)}
             placeholder="0"
-            className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full border border-input bg-background rounded-md px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring"
           />
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
+          <label className="block text-sm font-medium text-foreground mb-1.5">
             Max Price ($)
           </label>
           <input
@@ -86,7 +86,7 @@ export function FilterBar({ filters, onFilterChange }: FilterBarProps) {
             value={filters.maxPrice}
             onChange={(e) => handleChange('maxPrice', e.target.value)}
             placeholder="Any"
-            className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full border border-input bg-background rounded-md px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring"
           />
         </div>
       </div>
@@ -103,7 +103,7 @@ export function FilterBar({ filters, onFilterChange }: FilterBarProps) {
                 maxPrice: '',
               })
             }
-            className="text-sm text-blue-600 hover:text-blue-800 font-medium"
+            className="text-sm text-primary hover:text-primary/80 font-medium transition-colors"
           >
             Clear all filters
           </button>

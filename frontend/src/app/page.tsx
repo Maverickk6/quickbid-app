@@ -24,13 +24,13 @@ export default function Home() {
   });
 
   return (
-    <main className="flex-1 container mx-auto px-4 py-8 max-w-7xl">
+    <div className="container mx-auto px-4 py-8 max-w-7xl">
       {/* Header */}
       <div className="mb-8">
-        <h1 className="text-3xl font-bold text-gray-900 mb-2">
+        <h1 className="text-3xl font-bold text-foreground mb-2">
           Browse Auctions
         </h1>
-        <p className="text-gray-600">
+        <p className="text-muted-foreground">
           Discover unique items and place your bids in real-time.
         </p>
       </div>
@@ -41,13 +41,13 @@ export default function Home() {
       {/* Loading State */}
       {isLoading && (
         <div className="flex justify-center py-12">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
         </div>
       )}
 
       {/* Error State */}
       {error && (
-        <div className="bg-red-50 border border-red-200 rounded-lg p-4 text-red-700">
+        <div className="bg-destructive/10 border border-destructive/20 rounded-lg p-4 text-destructive">
           Failed to load auctions. Please try again later.
         </div>
       )}
@@ -64,7 +64,7 @@ export default function Home() {
           {/* Empty State */}
           {data.data.length === 0 && (
             <div className="text-center py-12">
-              <p className="text-gray-500 text-lg">
+              <p className="text-muted-foreground text-lg">
                 No auctions found matching your filters.
               </p>
               <button
@@ -76,7 +76,7 @@ export default function Home() {
                     maxPrice: '',
                   })
                 }
-                className="mt-4 text-blue-600 hover:text-blue-800 font-medium"
+                className="mt-4 text-primary hover:text-primary/80 font-medium transition-colors"
               >
                 Clear filters
               </button>
@@ -89,17 +89,17 @@ export default function Home() {
               <button
                 onClick={() => setPage((p) => Math.max(1, p - 1))}
                 disabled={page === 1}
-                className="px-4 py-2 border border-gray-300 rounded-md disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50"
+                className="px-4 py-2 border border-input bg-background rounded-md text-sm font-medium text-foreground hover:bg-muted disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
               >
                 Previous
               </button>
-              <span className="text-gray-600">
+              <span className="text-muted-foreground text-sm">
                 Page {page} of {data.meta.totalPages}
               </span>
               <button
                 onClick={() => setPage((p) => Math.min(data.meta.totalPages, p + 1))}
                 disabled={page === data.meta.totalPages}
-                className="px-4 py-2 border border-gray-300 rounded-md disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50"
+                className="px-4 py-2 border border-input bg-background rounded-md text-sm font-medium text-foreground hover:bg-muted disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
               >
                 Next
               </button>
@@ -107,11 +107,11 @@ export default function Home() {
           )}
 
           {/* Results Count */}
-          <div className="text-center text-sm text-gray-500 mt-4">
+          <div className="text-center text-sm text-muted-foreground mt-4">
             Showing {data.data.length} of {data.meta.total} auctions
           </div>
         </>
       )}
-    </main>
+    </div>
   );
 }

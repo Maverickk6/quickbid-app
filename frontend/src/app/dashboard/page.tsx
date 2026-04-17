@@ -11,27 +11,27 @@ export default function DashboardPage() {
 
   if (!isAuthenticated) {
     return (
-      <main className="flex-1 flex items-center justify-center px-4 py-12">
+      <div className="flex items-center justify-center px-4 py-12">
         <div className="text-center">
-          <h1 className="text-2xl font-bold text-gray-900 mb-4">Dashboard</h1>
-          <p className="text-gray-600 mb-6">
+          <h1 className="text-2xl font-bold text-foreground mb-4">Dashboard</h1>
+          <p className="text-muted-foreground mb-6">
             Sign in to view your bidding activity and manage your auctions.
           </p>
           <Link
             href="/login"
-            className="inline-block bg-blue-600 text-white px-6 py-3 rounded-md font-semibold hover:bg-blue-700 transition-colors"
+            className="inline-block bg-primary text-primary-foreground px-6 py-3 rounded-md font-semibold hover:bg-primary/90 transition-colors"
           >
             Sign in
           </Link>
         </div>
-      </main>
+      </div>
     );
   }
 
   if (isLoading) {
     return (
       <div className="flex justify-center py-20">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
       </div>
     );
   }
@@ -39,7 +39,7 @@ export default function DashboardPage() {
   if (error) {
     return (
       <div className="container mx-auto px-4 py-8">
-        <div className="bg-red-50 border border-red-200 rounded-lg p-4 text-red-700">
+        <div className="bg-destructive/10 border border-destructive/20 rounded-lg p-4 text-destructive">
           Failed to load dashboard. Please try again later.
         </div>
       </div>
@@ -52,36 +52,36 @@ export default function DashboardPage() {
   const { summary, activeBids, recentBids } = dashboard;
 
   return (
-    <main className="flex-1 container mx-auto px-4 py-8 max-w-6xl">
+    <div className="container mx-auto px-4 py-8 max-w-6xl">
       {/* Header */}
       <div className="mb-8">
-        <h1 className="text-3xl font-bold text-gray-900 mb-2">
+        <h1 className="text-3xl font-bold text-foreground mb-2">
           My Dashboard
         </h1>
-        <p className="text-gray-600">
+        <p className="text-muted-foreground">
           Track your bidding activity and manage your auctions.
         </p>
       </div>
 
       {/* Summary Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-          <p className="text-sm text-gray-500 mb-1">Total Bids</p>
-          <p className="text-3xl font-bold text-gray-900">{summary.totalBids}</p>
+        <div className="bg-card rounded-lg shadow-sm border p-6">
+          <p className="text-sm text-muted-foreground mb-1">Total Bids</p>
+          <p className="text-3xl font-bold text-foreground">{summary.totalBids}</p>
         </div>
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-          <p className="text-sm text-gray-500 mb-1">Auctions Won</p>
-          <p className="text-3xl font-bold text-green-600">{summary.auctionsWon}</p>
+        <div className="bg-card rounded-lg shadow-sm border p-6">
+          <p className="text-sm text-muted-foreground mb-1">Auctions Won</p>
+          <p className="text-3xl font-bold text-success">{summary.auctionsWon}</p>
         </div>
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-          <p className="text-sm text-gray-500 mb-1">Total Spent</p>
-          <p className="text-3xl font-bold text-blue-600">
+        <div className="bg-card rounded-lg shadow-sm border p-6">
+          <p className="text-sm text-muted-foreground mb-1">Total Spent</p>
+          <p className="text-3xl font-bold text-primary">
             ${summary.totalSpent.toFixed(2)}
           </p>
         </div>
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-          <p className="text-sm text-gray-500 mb-1">Active Bids</p>
-          <p className="text-3xl font-bold text-orange-600">
+        <div className="bg-card rounded-lg shadow-sm border p-6">
+          <p className="text-sm text-muted-foreground mb-1">Active Bids</p>
+          <p className="text-3xl font-bold text-warning">
             {summary.activeAuctions}
           </p>
         </div>
@@ -89,15 +89,15 @@ export default function DashboardPage() {
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
         {/* Active Bids Section */}
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+        <div className="bg-card rounded-lg shadow-sm border p-6">
           <h2 className="text-xl font-semibold mb-4">
             Active Bids ({activeBids.length})
           </h2>
           
           {activeBids.length === 0 ? (
-            <p className="text-gray-500 italic">
+            <p className="text-muted-foreground italic">
               You don&apos;t have any active bids.{' '}
-              <Link href="/" className="text-blue-600 hover:underline">
+              <Link href="/" className="text-primary hover:underline">
                 Browse auctions
               </Link>
             </p>
@@ -107,32 +107,32 @@ export default function DashboardPage() {
                 <Link
                   key={auction.id}
                   href={`/auction/${auction.id}`}
-                  className="block border border-gray-100 rounded-lg p-4 hover:shadow-md transition-shadow"
+                  className="block border rounded-lg p-4 hover:shadow-sm transition-shadow"
                 >
                   <div className="flex justify-between items-start mb-2">
-                    <h3 className="font-medium text-gray-900 line-clamp-1">
+                    <h3 className="font-medium text-foreground line-clamp-1">
                       {auction.title}
                     </h3>
                     <span
-                      className={`text-xs px-2 py-1 rounded-full ${
+                      className={`text-xs px-2 py-1 rounded-md font-medium ${
                         auction.status === 'ACTIVE'
-                          ? 'bg-green-100 text-green-800'
-                          : 'bg-gray-100 text-gray-600'
+                          ? 'bg-live/10 text-live'
+                          : 'bg-muted text-muted-foreground'
                       }`}
                     >
                       {auction.status}
                     </span>
                   </div>
                   <div className="flex justify-between items-center text-sm">
-                    <span className="text-gray-500">
+                    <span className="text-muted-foreground">
                       Current:{' '}
-                      <span className="font-semibold text-green-600">
+                      <span className="font-semibold text-success">
                         ${auction.currentPrice.toFixed(2)}
                       </span>
                     </span>
                     <CountdownTimer endTime={auction.endTime} />
                   </div>
-                  <div className="mt-2 text-xs text-gray-400">
+                  <div className="mt-2 text-xs text-muted-foreground">
                     {auction._count.bids} bids
                   </div>
                 </Link>
@@ -142,13 +142,13 @@ export default function DashboardPage() {
         </div>
 
         {/* Recent Bids Section */}
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+        <div className="bg-card rounded-lg shadow-sm border p-6">
           <h2 className="text-xl font-semibold mb-4">Recent Bid History</h2>
           
           {recentBids.length === 0 ? (
-            <p className="text-gray-500 italic">
+            <p className="text-muted-foreground italic">
               No bid history yet.{' '}
-              <Link href="/" className="text-blue-600 hover:underline">
+              <Link href="/" className="text-primary hover:underline">
                 Start bidding
               </Link>
             </p>
@@ -158,25 +158,25 @@ export default function DashboardPage() {
                 <Link
                   key={bid.id}
                   href={`/auction/${bid.auction?.id}`}
-                  className="flex justify-between items-center p-3 bg-gray-50 rounded-md hover:bg-gray-100 transition-colors"
+                  className="flex justify-between items-center p-3 bg-muted rounded-md hover:bg-muted/80 transition-colors"
                 >
                   <div>
-                    <p className="font-medium text-gray-900 line-clamp-1">
+                    <p className="font-medium text-foreground line-clamp-1">
                       {bid.auction?.title || 'Unknown Auction'}
                     </p>
-                    <p className="text-xs text-gray-500">
+                    <p className="text-xs text-muted-foreground">
                       {new Date(bid.createdAt).toLocaleString()}
                     </p>
                   </div>
                   <div className="text-right">
-                    <p className="font-semibold text-gray-900">
+                    <p className="font-semibold text-foreground">
                       ${bid.amount.toFixed(2)}
                     </p>
                     <p
-                      className={`text-xs ${
+                      className={`text-xs font-medium ${
                         bid.isWinning
-                          ? 'text-green-600'
-                          : 'text-gray-500'
+                          ? 'text-success'
+                          : 'text-muted-foreground'
                       }`}
                     >
                       {bid.isWinning
@@ -192,6 +192,6 @@ export default function DashboardPage() {
           )}
         </div>
       </div>
-    </main>
+    </div>
   );
 }

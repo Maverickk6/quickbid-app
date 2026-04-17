@@ -68,7 +68,7 @@ export default function AuctionDetailPage() {
   if (auctionLoading) {
     return (
       <div className="flex justify-center py-20">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
       </div>
     );
   }
@@ -76,10 +76,10 @@ export default function AuctionDetailPage() {
   if (!auction) {
     return (
       <div className="container mx-auto px-4 py-8">
-        <div className="bg-red-50 border border-red-200 rounded-lg p-4 text-red-700">
+        <div className="bg-destructive/10 border border-destructive/20 rounded-lg p-4 text-destructive">
           Auction not found.
         </div>
-        <Link href="/" className="mt-4 text-blue-600 hover:underline inline-block">
+        <Link href="/" className="mt-4 text-primary hover:underline inline-block">
           ← Back to auctions
         </Link>
       </div>
@@ -92,7 +92,7 @@ export default function AuctionDetailPage() {
   return (
     <main className="flex-1 container mx-auto px-4 py-8 max-w-6xl">
       {/* Breadcrumb */}
-      <Link href="/" className="text-blue-600 hover:underline mb-6 inline-block">
+      <Link href="/" className="text-primary hover:underline mb-6 inline-block">
         ← Back to auctions
       </Link>
 
@@ -101,40 +101,40 @@ export default function AuctionDetailPage() {
         <div className="lg:col-span-2">
           {/* Category & Live Indicator */}
           <div className="flex items-center gap-3 mb-4">
-            <span className="inline-block bg-blue-100 text-blue-800 text-sm px-3 py-1 rounded-full">
+            <span className="inline-block bg-secondary text-secondary-foreground text-sm px-3 py-1 rounded-md font-medium">
               {auction.category}
             </span>
             {ws?.isConnected && isActive && (
-              <span className="inline-flex items-center gap-1.5 bg-green-100 text-green-800 text-sm px-3 py-1 rounded-full animate-pulse">
-                <span className="w-2 h-2 bg-green-500 rounded-full"></span>
+              <span className="inline-flex items-center gap-1.5 bg-live/10 text-live text-sm px-3 py-1 rounded-md animate-pulse font-medium">
+                <span className="w-2 h-2 bg-live rounded-full"></span>
                 Live
               </span>
             )}
             {ws?.lastBidUpdate && (
-              <span className="text-sm text-green-600 font-medium animate-pulse">
+              <span className="text-sm text-live font-medium animate-pulse">
                 New bid just placed!
               </span>
             )}
           </div>
 
           {/* Title */}
-          <h1 className="text-3xl font-bold text-gray-900 mb-4">
+          <h1 className="text-3xl font-bold text-foreground mb-4">
             {auction.title}
           </h1>
 
           {/* Description */}
-          <p className="text-gray-700 mb-6 whitespace-pre-line">
+          <p className="text-muted-foreground mb-6 whitespace-pre-line">
             {auction.description}
           </p>
 
           {/* Bid History */}
-          <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+          <div className="bg-card rounded-lg shadow-sm border p-6">
             <h2 className="text-xl font-semibold mb-4">
               Bid History ({bids.length})
             </h2>
             
             {bids.length === 0 ? (
-              <p className="text-gray-500 italic">No bids yet. Be the first to bid!</p>
+              <p className="text-muted-foreground italic">No bids yet. Be the first to bid!</p>
             ) : (
               <div className="space-y-3">
                 {bids.map((bid, index) => (
@@ -142,29 +142,29 @@ export default function AuctionDetailPage() {
                     key={bid.id}
                     className={`flex justify-between items-center p-3 rounded-md ${
                       bid.isWinning
-                        ? 'bg-green-50 border border-green-200'
-                        : 'bg-gray-50'
+                        ? 'bg-success/10 border border-success/20'
+                        : 'bg-muted'
                     }`}
                   >
                     <div>
-                      <span className="font-medium">
+                      <span className="font-medium text-foreground">
                         {bid.user.name || 'Anonymous'}
                       </span>
-                      <span className="text-sm text-gray-500 ml-2">
+                      <span className="text-sm text-muted-foreground ml-2">
                         {new Date(bid.createdAt).toLocaleString()}
                       </span>
                     </div>
                     <div className="flex items-center gap-2">
-                      <span className="font-semibold text-lg">
+                      <span className="font-semibold text-lg text-foreground">
                         ${bid.amount.toFixed(2)}
                       </span>
                       {bid.isWinning && (
-                        <span className="bg-green-500 text-white text-xs px-2 py-1 rounded">
+                        <span className="bg-success text-success-foreground text-xs px-2 py-1 rounded font-medium">
                           Winning
                         </span>
                       )}
                       {index === bids.length - 1 && !bid.isWinning && (
-                        <span className="bg-gray-400 text-white text-xs px-2 py-1 rounded">
+                        <span className="bg-muted-foreground/30 text-muted-foreground text-xs px-2 py-1 rounded font-medium">
                           Outbid
                         </span>
                       )}
@@ -178,18 +178,18 @@ export default function AuctionDetailPage() {
 
         {/* Right Column - Bidding Panel */}
         <div className="lg:col-span-1">
-          <div className="bg-white rounded-lg shadow-md border border-gray-200 p-6 sticky top-4">
+          <div className="bg-card rounded-lg shadow-sm border p-6 sticky top-20">
             {/* Current Price */}
             <div className="text-center mb-6">
-              <p className="text-sm text-gray-500 mb-1">Current Price</p>
-              <p className="text-4xl font-bold text-green-600">
+              <p className="text-sm text-muted-foreground mb-1">Current Price</p>
+              <p className="text-4xl font-bold text-success">
                 ${auction.currentPrice.toFixed(2)}
               </p>
             </div>
 
             {/* Timer */}
-            <div className="text-center mb-6 p-3 bg-gray-50 rounded-md">
-              <p className="text-sm text-gray-500 mb-1">
+            <div className="text-center mb-6 p-3 bg-muted rounded-md">
+              <p className="text-sm text-muted-foreground mb-1">
                 {isActive ? 'Ends in' : 'Auction ended'}
               </p>
               <CountdownTimer
@@ -200,16 +200,16 @@ export default function AuctionDetailPage() {
 
             {/* Starting Price */}
             <div className="flex justify-between text-sm mb-4">
-              <span className="text-gray-500">Starting Price:</span>
-              <span className="font-medium">
+              <span className="text-muted-foreground">Starting Price:</span>
+              <span className="font-medium text-foreground">
                 ${auction.startingPrice.toFixed(2)}
               </span>
             </div>
 
             {/* Min Increment */}
             <div className="flex justify-between text-sm mb-6">
-              <span className="text-gray-500">Min Increment:</span>
-              <span className="font-medium">
+              <span className="text-muted-foreground">Min Increment:</span>
+              <span className="font-medium text-foreground">
                 ${auction.minIncrement.toFixed(2)}
               </span>
             </div>
@@ -219,11 +219,11 @@ export default function AuctionDetailPage() {
               isAuthenticated ? (
                 <form onSubmit={handlePlaceBid}>
                   <div className="mb-4">
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                    <label className="block text-sm font-medium text-foreground mb-1.5">
                       Your Bid (min: ${minBid.toFixed(2)})
                     </label>
                     <div className="relative">
-                      <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500">
+                      <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground">
                         $
                       </span>
                       <input
@@ -233,14 +233,14 @@ export default function AuctionDetailPage() {
                         value={bidAmount}
                         onChange={(e) => setBidAmount(e.target.value)}
                         placeholder={minBid.toFixed(2)}
-                        className="w-full border border-gray-300 rounded-md pl-8 pr-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        className="w-full border border-input bg-background rounded-md pl-8 pr-3 py-2 text-foreground focus:outline-none focus:ring-2 focus:ring-ring"
                         required
                       />
                     </div>
                   </div>
 
                   {bidError && (
-                    <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-md text-red-700 text-sm">
+                    <div className="mb-4 p-3 bg-destructive/10 border border-destructive/20 rounded-md text-destructive text-sm">
                       {bidError}
                     </div>
                   )}
@@ -248,27 +248,27 @@ export default function AuctionDetailPage() {
                   <button
                     type="submit"
                     disabled={placeBid.isPending}
-                    className="w-full bg-blue-600 text-white py-3 rounded-md font-semibold hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                    className="w-full bg-primary text-primary-foreground py-3 rounded-md font-semibold hover:bg-primary/90 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                   >
                     {placeBid.isPending ? 'Placing Bid...' : 'Place Bid'}
                   </button>
                 </form>
               ) : (
-                <div className="text-center p-4 bg-gray-50 rounded-md">
-                  <p className="text-gray-600 mb-3">
+                <div className="text-center p-4 bg-muted rounded-md">
+                  <p className="text-muted-foreground mb-3">
                     Sign in to place a bid
                   </p>
                   <Link
                     href="/login"
-                    className="inline-block w-full bg-blue-600 text-white py-2 rounded-md font-medium hover:bg-blue-700 transition-colors"
+                    className="inline-block w-full bg-primary text-primary-foreground py-2 rounded-md font-medium hover:bg-primary/90 transition-colors"
                   >
                     Sign in to Bid
                   </Link>
                 </div>
               )
             ) : (
-              <div className="text-center p-4 bg-gray-100 rounded-md">
-                <p className="text-gray-600 font-medium">
+              <div className="text-center p-4 bg-muted rounded-md">
+                <p className="text-muted-foreground font-medium">
                   {auction.status === 'ENDED'
                     ? 'This auction has ended'
                     : 'This auction is cancelled'}
@@ -277,7 +277,7 @@ export default function AuctionDetailPage() {
             )}
 
             {/* Total Bids */}
-            <div className="mt-4 text-center text-sm text-gray-500">
+            <div className="mt-4 text-center text-sm text-muted-foreground">
               {auction._count.bids} bid{auction._count.bids !== 1 ? 's' : ''} placed
             </div>
           </div>
