@@ -8,7 +8,7 @@ import { broadcastToAuction } from '../websocket/websocket';
 export const bidRoutes = new Hono();
 
 const placeBidSchema = z.object({
-  auctionId: z.string().uuid(),
+  auctionId: z.uuid(),
   amount: z.number().positive(),
 });
 
