@@ -26,6 +26,11 @@ export default function Home() {
     }
   }, []);
 
+  // Reset page to 1 when filters change
+  useEffect(() => {
+    setPage(1);
+  }, [filters.status, filters.category, filters.minPrice, filters.maxPrice]);
+
   // Save filters to localStorage when they change
   useEffect(() => {
     localStorage.setItem('auctionFilters', JSON.stringify(filters));

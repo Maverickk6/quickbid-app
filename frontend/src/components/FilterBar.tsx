@@ -1,5 +1,6 @@
 'use client';
 
+import { useState } from 'react';
 import { useCategories } from '@/hooks/useAuctions';
 
 interface FilterBarProps {
@@ -21,8 +22,25 @@ export function FilterBar({ filters, onFilterChange }: FilterBarProps) {
   const { data: categoriesData } = useCategories();
   const categories = categoriesData?.data || [];
 
-  const handleChange = (key: keyof typeof filters, value: string) => {
-    onFilterChange({ ...filters, [key]: value });
+  const [localFilters, setLocalFilters] = useState(filters);
+
+  const handleChange = (key: keyof typeof localFilters, value: string) => {
+    setLocalFilters({ ...localFilters, [key]: value });
+  };
+
+  const handleApply = () => {
+    onFilterChange(localFilters);
+  };
+
+  const handleClear = () => {
+    const clearedFilters = {
+      status: '',
+      category: '',
+      minPrice: '',
+      maxPrice: '',
+    };
+    setLocalFilters(clearedFilters);
+    onFilterChange(clearedFilters);
   };
 
   return (
@@ -34,7 +52,7 @@ export function FilterBar({ filters, onFilterChange }: FilterBarProps) {
             Status
           </label>
           <select
-            value={filters.status}
+            value={localFilters.status}
             onChange={(e) => handleChange('status', e.target.value)}
             className="w-full border border-input bg-background rounded-md px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-ring"
           >
@@ -50,7 +68,7 @@ export function FilterBar({ filters, onFilterChange }: FilterBarProps) {
             Category
           </label>
           <select
-            value={filters.category}
+            value={localFilters.category}
             onChange={(e) => handleChange('category', e.target.value)}
             className="w-full border border-input bg-background rounded-md px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-ring"
           >
@@ -70,7 +88,7 @@ export function FilterBar({ filters, onFilterChange }: FilterBarProps) {
           </label>
           <input
             type="number"
-            value={filters.minPrice}
+            value={localFilters.minPrice}
             onChange={(e) => handleChange('minPrice', e.target.value)}
             placeholder="0"
             className="w-full border border-input bg-background rounded-md px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring"
@@ -83,7 +101,7 @@ export function FilterBar({ filters, onFilterChange }: FilterBarProps) {
           </label>
           <input
             type="number"
-            value={filters.maxPrice}
+            value={localFilters.maxPrice}
             onChange={(e) => handleChange('maxPrice', e.target.value)}
             placeholder="Any"
             className="w-full border border-input bg-background rounded-md px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring"
@@ -91,24 +109,22 @@ export function FilterBar({ filters, onFilterChange }: FilterBarProps) {
         </div>
       </div>
 
-      {/* Clear Filters */}
-      {(filters.status || filters.category || filters.minPrice || filters.maxPrice) && (
-        <div className="mt-4 flex justify-end">
-          <button
-            onClick={() =>
-              onFilterChange({
-                status: '',
-                category: '',
-                minPrice: '',
-                maxPrice: '',
-              })
-            }
-            className="text-sm text-primary hover:text-primary/80 font-medium transition-colors"
-          >
-            Clear all filters
-          </button>
-        </div>
-      )}
+      {/* Apply and Clear Buttons */}
+      <div className="mt-4 flex justify-between items-center">
+        <button
+          onClick={handleClear}
+          disabled={!localFilters.status && !localFilters.category && !localFilters.minPrice && !localFilters.maxPrice}
+          className="text-sm text-primary hover:text-primary/80 font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+        >
+          Clear all filters
+        </button>
+        <button
+          onClick={handleApply}
+          className="px-4 py-2 bg-primary text-primary-foreground rounded-md text-sm font-medium hover:bg-primary/90 transition-colors"
+        >
+          Apply Filters
+        </button>
+      </div>
     </div>
   );
 }

@@ -31,7 +31,7 @@ auctionRoutes.get('/', zValidator('query', listQuerySchema), async (c) => {
   }
   
   if (query.category) {
-    where.category = query.category;
+    where.category = { equals: query.category, mode: 'insensitive' };
   }
   
   if (query.minPrice !== undefined || query.maxPrice !== undefined) {
