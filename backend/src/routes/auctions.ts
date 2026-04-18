@@ -21,9 +21,13 @@ const listQuerySchema = z.object({
 auctionRoutes.get('/', zValidator('query', listQuerySchema), async (c) => {
   const query = c.req.valid('query');
   const where: Prisma.AuctionWhereInput = {};
-  
+
   if (query.status) {
     where.status = query.status;
+    // For ACTIVE status, also filter by endTime to exclude auctions that have ended
+    if (query.status === 'ACTIVE') {
+      where.endTime = { gt: new Date() };
+    }
   }
   
   if (query.category) {
