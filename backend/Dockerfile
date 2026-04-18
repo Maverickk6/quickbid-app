@@ -14,11 +14,8 @@ RUN npm ci
 # Copy source code
 COPY . .
 
-# Generate Prisma Client
-RUN npx prisma generate
-
-# Build TypeScript
-RUN npm run build || echo "No build script, skipping"
+# Build TypeScript (if needed)
+RUN npm run build 2>/dev/null || echo "No build script, skipping"
 
 # Production stage
 FROM node:20-alpine
@@ -34,13 +31,12 @@ COPY prisma ./prisma/
 COPY prisma.config.ts ./
 
 # Install production dependencies only
-RUN npm ci --only=production
+RUN npm ci --only=production 2>/dev/null || npm ci --omit=dev
 
-# Generate Prisma Client for production
-RUN npx prisma generate
-
-# Copy built files from builder
+# Copy source files
 COPY --from=builder /app/src ./src
+COPY --from=builder /app/prisma ./prisma
+COPY --from=builder /app/prisma.config.ts ./
 
 # Expose port
 EXPOSE 3001

@@ -103,7 +103,14 @@ export default function DashboardPage() {
             </p>
           ) : (
             <div className="space-y-4">
-              {activeBids.map((auction) => (
+              {activeBids.map((auction) => {
+                const timeLeft = new Date(auction.endTime).getTime() - new Date().getTime();
+                const isActuallyActive = auction.status === 'ACTIVE' && timeLeft > 0;
+                const displayStatus = isActuallyActive ? 'ACTIVE' : auction.status;
+
+                console.log('Dashboard auction:', auction.title, 'status:', auction.status, 'timeLeft:', timeLeft, 'isActuallyActive:', isActuallyActive);
+
+                return (
                 <Link
                   key={auction.id}
                   href={`/auction/${auction.id}`}
@@ -115,12 +122,12 @@ export default function DashboardPage() {
                     </h3>
                     <span
                       className={`text-xs px-2 py-1 rounded-md font-medium ${
-                        auction.status === 'ACTIVE'
+                        isActuallyActive
                           ? 'bg-live/10 text-live'
                           : 'bg-muted text-muted-foreground'
                       }`}
                     >
-                      {auction.status}
+                      {displayStatus}
                     </span>
                   </div>
                   <div className="flex justify-between items-center text-sm">
@@ -136,7 +143,8 @@ export default function DashboardPage() {
                     {auction._count.bids} bids
                   </div>
                 </Link>
-              ))}
+                );
+              })}
             </div>
           )}
         </div>
@@ -157,7 +165,7 @@ export default function DashboardPage() {
               {recentBids.map((bid) => (
                 <Link
                   key={bid.id}
-                  href={`/auction/${bid.auction?.id}`}
+                  href={bid.auction?.id ? `/auction/${bid.auction.id}` : '#'}
                   className="flex justify-between items-center p-3 bg-muted rounded-md hover:bg-muted/80 transition-colors"
                 >
                   <div>

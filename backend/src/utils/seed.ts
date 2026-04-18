@@ -7,11 +7,17 @@ const CATEGORIES = [
 ];
 
 async function seed() {
-  console.log('Seeding database...');
+  console.log('Checking if seeding is needed...');
   
-  await prisma.bid.deleteMany();
-  await prisma.auction.deleteMany();
-  await prisma.user.deleteMany();
+  const existingUsers = await prisma.user.count();
+  const existingAuctions = await prisma.auction.count();
+  
+  if (existingUsers > 0 || existingAuctions > 0) {
+    console.log(`Database already has ${existingUsers} users and ${existingAuctions} auctions. Skipping seed.`);
+    return;
+  }
+  
+  console.log('Seeding database...');
   
   console.log('Creating test users...');
   

@@ -36,7 +36,8 @@ export const useWebSocketStore = create<WebSocketState>((set, get) => ({
     const { ws } = get();
     if (ws?.readyState === WebSocket.OPEN) return;
 
-    const socket = new WebSocket(WS_URL);
+    try {
+      const socket = new WebSocket(WS_URL);
 
     socket.onopen = () => {
       console.log('WebSocket connected');
@@ -103,6 +104,9 @@ export const useWebSocketStore = create<WebSocketState>((set, get) => ({
     };
 
     set({ ws: socket });
+    } catch (error) {
+      console.error('Failed to create WebSocket:', error);
+    }
   },
 
   disconnect: () => {

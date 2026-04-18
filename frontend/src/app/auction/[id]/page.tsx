@@ -11,35 +11,51 @@ import { useQueryClient } from '@tanstack/react-query';
 
 export default function AuctionDetailPage() {
   const params = useParams();
-  const auctionId = params.id as string;
+  const auctionId = params?.id as string;
   const [bidAmount, setBidAmount] = useState('');
   const [bidError, setBidError] = useState('');
   const { isAuthenticated } = useAuth();
   const queryClient = useQueryClient();
 
-  const { data: auctionData, isLoading: auctionLoading } = useAuction(auctionId);
-  const { data: bidsData } = useBidHistory(auctionId);
+  const { data: auctionData, isLoading: auctionLoading, error: auctionError } = useAuction(auctionId);
+  const { data: bidsData, error: bidsError } = useBidHistory(auctionId);
   const placeBid = usePlaceBid();
   const ws = useAuctionWebSocket(auctionId);
   const { connect } = useWebSocketStore();
 
-  useEffect(() => {
-    connect();
-    ws?.subscribe();
-    return () => {
-      ws?.unsubscribe();
-    };
-  }, [auctionId, connect, ws?.subscribe, ws?.unsubscribe]);
+  if (auctionError || bidsError) {
+    return (
+      <div className="container mx-auto px-4 py-8">
+        <div className="bg-destructive/10 border border-destructive/20 rounded-lg p-4 text-destructive">
+          Error loading auction. Please try again.
+        </div>
+        <Link href="/" className="mt-4 text-primary hover:underline inline-block">
+          ← Back to auctions
+        </Link>
+      </div>
+    );
+  }
+
+  const auction = auctionData?.data;
+  const bids = bidsData?.data || [];
 
   useEffect(() => {
-    if (ws?.lastBidUpdate) {
+    if (auctionId && auction && !auctionError) {
+      connect();
+      const store = useWebSocketStore.getState();
+      store.subscribeToAuction(auctionId);
+      return () => {
+        store.unsubscribeFromAuction(auctionId);
+      };
+    }
+  }, [auctionId, auction, auctionError, connect]);
+
+  useEffect(() => {
+    if (ws?.lastBidUpdate && auctionId) {
       queryClient.invalidateQueries({ queryKey: ['auction', auctionId] });
       queryClient.invalidateQueries({ queryKey: ['bids', auctionId] });
     }
   }, [ws?.lastBidUpdate, auctionId, queryClient]);
-
-  const auction = auctionData?.data;
-  const bids = bidsData?.data || [];
 
   const handlePlaceBid = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -87,6 +103,8 @@ export default function AuctionDetailPage() {
   }
 
   const isActive = auction.status === 'ACTIVE';
+  const timeLeft = new Date(auction.endTime).getTime() - new Date().getTime();
+  const isActuallyActive = isActive && timeLeft > 0;
   const minBid = auction.currentPrice + auction.minIncrement;
 
   return (
@@ -104,7 +122,7 @@ export default function AuctionDetailPage() {
             <span className="inline-block bg-secondary text-secondary-foreground text-sm px-3 py-1 rounded-md font-medium">
               {auction.category}
             </span>
-            {ws?.isConnected && isActive && (
+            {ws?.isConnected && isActuallyActive && (
               <span className="inline-flex items-center gap-1.5 bg-live/10 text-live text-sm px-3 py-1 rounded-md animate-pulse font-medium">
                 <span className="w-2 h-2 bg-live rounded-full"></span>
                 Live
@@ -148,7 +166,7 @@ export default function AuctionDetailPage() {
                   >
                     <div>
                       <span className="font-medium text-foreground">
-                        {bid.user.name || 'Anonymous'}
+                        {bid.user?.name || 'Anonymous'}
                       </span>
                       <span className="text-sm text-muted-foreground ml-2">
                         {new Date(bid.createdAt).toLocaleString()}
@@ -190,11 +208,14 @@ export default function AuctionDetailPage() {
             {/* Timer */}
             <div className="text-center mb-6 p-3 bg-muted rounded-md">
               <p className="text-sm text-muted-foreground mb-1">
-                {isActive ? 'Ends in' : 'Auction ended'}
+                {isActuallyActive ? 'Ends in' : 'Auction ended'}
               </p>
               <CountdownTimer
                 endTime={auction.endTime}
-                onEnd={() => window.location.reload()}
+                onEnd={() => {
+                  // Optional: refresh when auction ends
+                  // window.location.reload();
+                }}
               />
             </div>
 
@@ -215,7 +236,7 @@ export default function AuctionDetailPage() {
             </div>
 
             {/* Bid Form or Login Prompt */}
-            {isActive ? (
+            {isActuallyActive ? (
               isAuthenticated ? (
                 <form onSubmit={handlePlaceBid}>
                   <div className="mb-4">

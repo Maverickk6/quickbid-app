@@ -9,8 +9,9 @@ interface AuctionCardProps {
 }
 
 export function AuctionCard({ auction }: AuctionCardProps) {
-  const isEnded = auction.status === 'ENDED';
-  const isActive = auction.status === 'ACTIVE';
+  const timeLeft = new Date(auction.endTime).getTime() - new Date().getTime();
+  const isEnded = auction.status === 'ENDED' || timeLeft <= 0;
+  const isActive = auction.status === 'ACTIVE' && timeLeft > 0;
 
   return (
     <Link href={`/auction/${auction.id}`}>
