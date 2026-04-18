@@ -108,8 +108,6 @@ export default function DashboardPage() {
                 const isActuallyActive = auction.status === 'ACTIVE' && timeLeft > 0;
                 const displayStatus = isActuallyActive ? 'ACTIVE' : auction.status;
 
-                console.log('Dashboard auction:', auction.title, 'status:', auction.status, 'timeLeft:', timeLeft, 'isActuallyActive:', isActuallyActive);
-
                 return (
                 <Link
                   key={auction.id}

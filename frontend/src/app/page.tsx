@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useAuctions } from '@/hooks/useAuctions';
 import { AuctionCard } from '@/components/AuctionCard';
 import { FilterBar } from '@/components/FilterBar';
@@ -13,6 +13,24 @@ export default function Home() {
     maxPrice: '',
   });
   const [page, setPage] = useState(1);
+
+  // Load filters from localStorage on mount
+  useEffect(() => {
+    const savedFilters = localStorage.getItem('auctionFilters');
+    const savedPage = localStorage.getItem('auctionPage');
+    if (savedFilters) {
+      setFilters(JSON.parse(savedFilters));
+    }
+    if (savedPage) {
+      setPage(Number(savedPage));
+    }
+  }, []);
+
+  // Save filters to localStorage when they change
+  useEffect(() => {
+    localStorage.setItem('auctionFilters', JSON.stringify(filters));
+    localStorage.setItem('auctionPage', page.toString());
+  }, [filters, page]);
 
   const { data, isLoading, error } = useAuctions({
     status: filters.status || undefined,
