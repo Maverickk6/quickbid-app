@@ -146,16 +146,18 @@ quickbid-app/
 │   ├── src/
 │   │   ├── index.ts          # Entry point
 │   │   ├── server.ts         # Hono app config
-│   │   ├── db/prisma.ts      # Database client
+│   │   ├── db/               # Database client
 │   │   ├── middleware/       # Auth middleware
 │   │   ├── routes/           # API routes
 │   │   │   ├── auth.ts
 │   │   │   ├── auctions.ts
 │   │   │   ├── bids.ts
 │   │   │   └── dashboard.ts
-│   │   └── utils/seed.ts     # Database seeding
+│   │   ├── utils/            # Database seeding
+│   │   └── websocket/        # WebSocket server
 │   ├── prisma/
 │   │   └── schema.prisma     # Database schema
+│   ├── prisma.config.ts
 │   ├── Dockerfile
 │   └── package.json
 ├── frontend/
@@ -169,8 +171,11 @@ quickbid-app/
 │   │   ├── components/       # React components
 │   │   ├── contexts/         # Auth context
 │   │   ├── hooks/            # TanStack Query hooks
-│   │   └── lib/              # API client
+│   │   ├── lib/              # API client
+│   │   └── stores/           # Zustand stores
+│   ├── public/
 │   ├── Dockerfile
+│   ├── next.config.ts
 │   └── package.json
 ├── docker-compose.yml
 └── README.md
