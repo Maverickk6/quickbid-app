@@ -66,7 +66,7 @@ docker run -d --name quickbid-postgres \
 # Run migrations
 npx prisma migrate dev
 
-# Seed database with 500 auctions
+# Seed database with 600 auctions
 npm run seed
 
 # Start dev server
