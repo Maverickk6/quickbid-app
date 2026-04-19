@@ -95,76 +95,48 @@ Query params: `?status=ACTIVE&category=Electronics&minPrice=100&page=1&limit=20`
 
 ## Decisions & Trade-offs
 
-### 1. Denormalized currentPrice on Auction
-**Decision:** Store `currentPrice` on the Auction model instead of computing via MAX query.
+I made a few key technical decisions while building this project:
 
-**Trade-off:** 
-- **Pro:** Fast reads (no aggregation query)
-- **Con:** Must update atomically with bid (handled via transaction)
+**Storing currentPrice on the Auction model** - Instead of calculating the highest bid every time, I store the current price directly on the auction. This makes reads much faster since we don't need to run an aggregation query. The trade-off is that I need to update it atomically whenever a bid is placed, which I handle with a database transaction.
 
-**Alternative:** Database view with window function - rejected for read performance.
+**JWT for authentication** - I went with JWT tokens stored in localStorage. This keeps the backend stateless and makes it easier to scale with multiple backend instances. For a production app, I'd probably switch to httpOnly cookies with CSRF protection for better security against XSS attacks.
 
-### 2. JWT vs Session Cookies
-**Decision:** JWT stored in localStorage.
+**WebSockets for real-time updates** - I chose WebSockets over Server-Sent Events because I needed bidirectional communication (both sending bids and receiving updates). It's a bit more complex to manage connections, but it gives me the flexibility I need.
 
-**Trade-off:**
-- **Pro:** Stateless, works with multiple backend instances
-- **Con:** XSS vulnerability (mitigated by short expiry)
+**Prisma ORM** - Using Prisma made development much faster with its type safety and automatic migrations. There's a slight performance overhead compared to raw SQL, but for this scale it's not a problem.
 
-**Production path:** httpOnly cookies with CSRF protection.
-
-### 3. WebSocket vs Server-Sent Events
-**Decision:** WebSockets for bidirectional communication.
-
-**Trade-off:**
-- **Pro:** Bidirectional (bid placement + updates)
-- **Con:** More complex connection management
-
-### 4. Prisma vs Raw SQL
-**Decision:** Prisma ORM with raw SQL for complex aggregations.
-
-**Trade-off:**
-- **Pro:** Type-safe, fast development, automatic migrations
-- **Con:** Slight performance overhead (acceptable for this scale)
-
-### 5. Pagination vs Infinite Scroll
-**Decision:** Traditional pagination (page + limit).
-
-**Trade-off:**
-- **Pro:** Predictable URLs, easier caching, shareable links
-- **Con:** Less modern UX feel
+**Traditional pagination** - I went with classic page-based pagination instead of infinite scroll. It makes URLs predictable and shareable, and caching is simpler. The downside is it's not as modern-feeling as infinite scroll, but it's more practical for this use case.
 
 ## Testing Approach
 
-### Unit Tests
-- Bid validation logic
-- JWT token generation/verification
-- WebSocket message formatting
+For testing, I'd focus on a few key areas:
 
-### Integration Tests
-- Database transaction behavior (concurrent bidding)
-- API endpoints with test database
-- Authentication middleware
+**Unit tests** would cover the core logic like bid validation, JWT token handling, and WebSocket message formatting.
 
-### E2E Tests
-- User registration → login → bid flow
-- Real-time updates across multiple browsers
-- Auction ending and winner determination
+**Integration tests** would verify that database transactions work correctly when multiple people bid at the same time, that API endpoints behave as expected with a test database, and that the authentication middleware properly protects routes.
 
-### Manual Testing Checklist
-- [ ] Place bid below current price (rejected)
-- [ ] Two users bid simultaneously (only one wins)
-- [ ] Auction ends while user watching (timer stops)
-- [ ] Dashboard numbers accurate after multiple bids
-- [ ] JWT expiry handles gracefully (redirect to login)
+**End-to-end tests** would simulate real user flows - like registering, logging in, and placing a bid. I'd also test that real-time updates work across multiple browser windows, and that auctions end correctly with the right winner determined.
+
+For manual testing, I'd check things like:
+- Bids below the current price get rejected
+- When two users bid simultaneously, only one wins
+- The timer stops when an auction ends
+- Dashboard stats stay accurate after multiple bids
+- JWT expiry redirects users to login gracefully
 
 ## If I Had More Time
 
-1. **Image Uploads**: S3 integration for auction images
-2. **Auto-bid (Proxy Bidding)**: Users set max bid, system auto-increments
-3. **Rate Limiting**: Redis-based rate limiting for bid placement
-4. **Search**: Full-text search with PostgreSQL tsvector
-5. **Notifications**: Email notifications for outbid/won auctions
+There are a few features I'd love to add if I had more time:
+
+**Image uploads** - I'd integrate with S3 so users can upload actual photos for their auctions instead of using placeholders.
+
+**Auto-bidding (proxy bidding)** - Users could set a maximum bid and the system would automatically increment for them when they get outbid, so they don't have to watch the auction constantly.
+
+**Rate limiting** - I'd add Redis-based rate limiting to prevent abuse and ensure fair bidding.
+
+**Search** - A full-text search feature using PostgreSQL's tsvector would make it easier for users to find specific items.
+
+**Notifications** - Email notifications when you get outbid or win an auction would be a nice touch to keep users engaged.
 
 ## Project Structure
 
