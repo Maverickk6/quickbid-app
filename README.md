@@ -38,7 +38,7 @@ A full-stack real-time auction platform where users can browse active auctions, 
 
 ```bash
 # Clone the repository
-git clone <your-repo-url>
+git clone https://www.github.com/maverickk6/quickbid-app
 cd quickbid-app
 
 # Start all services
